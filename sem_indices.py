@@ -23,20 +23,20 @@ disk_usage_before = util.diskUsage()
 usage_stats = util.usageStats(NUM_DAYS)
 
 # Inserção de N documentos
-insercaoSemIndice = 0
-geracaoDados = 0
+insercao_sem_indice = 0
+geracao_dados = 0
 
 qnt_blocks = int(TOTAL_DATA / NUM_CITIES)
 for ii in range(qnt_blocks):
     inicio = timeit.default_timer()
     data = util.generateData()
     fim = timeit.default_timer()
-    geracaoDados += (fim - inicio)
+    geracao_dados += (fim - inicio)
 
     inicio = timeit.default_timer()
     collection.insert_many(data)
     fim = timeit.default_timer()
-    insercaoSemIndice += (fim - inicio)
+    insercao_sem_indice += (fim - inicio)
 
 # Busca sem indice
 inicio = timeit.default_timer()
@@ -47,18 +47,25 @@ for item in search:
     pass
 
 fim = timeit.default_timer()
-buscaSemIndice = fim - inicio
+busca_sem_indice = fim - inicio
 
 usage_stats.kill()
 
 disk_usage_after = util.diskUsage()
 disk_usage_total = disk_usage_after - disk_usage_before
 
+tempo_total = geracao_dados + insercao_sem_indice + busca_sem_indice
+
 with open("./data/tempo_sem_indice.csv", "a") as f:
     times = str(NUM_DAYS) + ","
-    times += str(geracaoDados) + ","
-    times += str(insercaoSemIndice) + ","
-    times += str(buscaSemIndice) + ","
+    times += str(geracao_dados) + ","
+    times += str(insercao_sem_indice) + ","
+    times += str(busca_sem_indice) + ","
+    times += str(tempo_total) + ","
     times += str(TOTAL_DATA) + ","
     times += str(disk_usage_total) + "\n"
     f.write(times)
+
+collection.drop()
+
+print("-> Finished - %i day(s)" % NUM_DAYS)

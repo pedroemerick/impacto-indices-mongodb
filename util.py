@@ -47,13 +47,14 @@ def diskUsage():
         
         return usage_value
 
-def usageStats(days):
+def usageStats(days, filename):
     cmd = 'while true; do { { echo '
     cmd += str(days)
     cmd += '; date +%d/%m/%y-%T; } | tr "\n" ","; '
     cmd += 'docker stats --no-stream '
     cmd += '--format "{{.Container}},{{.CPUPerc}},{{.MemUsage}},{{.MemPerc}},{{.BlockIO}}" mongo;  }; '
-    cmd += 'sleep 10; done >> ./data/stats_sem_indice.csv'
+    cmd += 'sleep 30; done >> ./data/'
+    cmd += filename
 
     usage = subprocess.Popen(cmd, shell=True, stdout=None)
 
