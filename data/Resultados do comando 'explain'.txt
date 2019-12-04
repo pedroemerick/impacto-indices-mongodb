@@ -1,0 +1,164 @@
+> use cindices;
+switched to db cindices
+> db.data.find({"temperature": {$lte: 1}}).explain("executionStats");
+{
+	"queryPlanner" : {
+		"plannerVersion" : 1,
+		"namespace" : "cindices.data",
+		"indexFilterSet" : false,
+		"parsedQuery" : {
+			"temperature" : {
+				"$lte" : 1
+			}
+		},
+		"queryHash" : "D84B4164",
+		"planCacheKey" : "EC7FCD0D",
+		"winningPlan" : {
+			"stage" : "FETCH",
+			"inputStage" : {
+				"stage" : "IXSCAN",
+				"keyPattern" : {
+					"temperature" : 1
+				},
+				"indexName" : "temperature_1",
+				"isMultiKey" : false,
+				"multiKeyPaths" : {
+					"temperature" : [ ]
+				},
+				"isUnique" : false,
+				"isSparse" : false,
+				"isPartial" : false,
+				"indexVersion" : 2,
+				"direction" : "forward",
+				"indexBounds" : {
+					"temperature" : [
+						"[-inf.0, 1.0]"
+					]
+				}
+			}
+		},
+		"rejectedPlans" : [ ]
+	},
+	"executionStats" : {
+		"executionSuccess" : true,
+		"nReturned" : 4845385,
+		"executionTimeMillis" : 107155,
+		"totalKeysExamined" : 4845385,
+		"totalDocsExamined" : 4845385,
+		"executionStages" : {
+			"stage" : "FETCH",
+			"nReturned" : 4845385,
+			"executionTimeMillisEstimate" : 52683,
+			"works" : 4845386,
+			"advanced" : 4845385,
+			"needTime" : 0,
+			"needYield" : 0,
+			"saveState" : 38499,
+			"restoreState" : 38499,
+			"isEOF" : 1,
+			"docsExamined" : 4845385,
+			"alreadyHasObj" : 0,
+			"inputStage" : {
+				"stage" : "IXSCAN",
+				"nReturned" : 4845385,
+				"executionTimeMillisEstimate" : 8434,
+				"works" : 4845386,
+				"advanced" : 4845385,
+				"needTime" : 0,
+				"needYield" : 0,
+				"saveState" : 38499,
+				"restoreState" : 38499,
+				"isEOF" : 1,
+				"keyPattern" : {
+					"temperature" : 1
+				},
+				"indexName" : "temperature_1",
+				"isMultiKey" : false,
+				"multiKeyPaths" : {
+					"temperature" : [ ]
+				},
+				"isUnique" : false,
+				"isSparse" : false,
+				"isPartial" : false,
+				"indexVersion" : 2,
+				"direction" : "forward",
+				"indexBounds" : {
+					"temperature" : [
+						"[-inf.0, 1.0]"
+					]
+				},
+				"keysExamined" : 4845385,
+				"seeks" : 1,
+				"dupsTested" : 0,
+				"dupsDropped" : 0
+			}
+		}
+	},
+	"serverInfo" : {
+		"host" : "5bc2db033040",
+		"port" : 27017,
+		"version" : "4.2.0",
+		"gitVersion" : "a4b751dcf51dd249c5865812b390cfd1c0129c30"
+	},
+	"ok" : 1
+}
+> use sindices;
+switched to db sindices
+> db.data.find({"temperature": {$lte: 1}}).explain("executionStats");
+{
+	"queryPlanner" : {
+		"plannerVersion" : 1,
+		"namespace" : "sindices.data",
+		"indexFilterSet" : false,
+		"parsedQuery" : {
+			"temperature" : {
+				"$lte" : 1
+			}
+		},
+		"queryHash" : "D84B4164",
+		"planCacheKey" : "D84B4164",
+		"winningPlan" : {
+			"stage" : "COLLSCAN",
+			"filter" : {
+				"temperature" : {
+					"$lte" : 1
+				}
+			},
+			"direction" : "forward"
+		},
+		"rejectedPlans" : [ ]
+	},
+	"executionStats" : {
+		"executionSuccess" : true,
+		"nReturned" : 4356792,
+		"executionTimeMillis" : 69727,
+		"totalKeysExamined" : 0,
+		"totalDocsExamined" : 89280000,
+		"executionStages" : {
+			"stage" : "COLLSCAN",
+			"filter" : {
+				"temperature" : {
+					"$lte" : 1
+				}
+			},
+			"nReturned" : 4356792,
+			"executionTimeMillisEstimate" : 12551,
+			"works" : 89280002,
+			"advanced" : 4356792,
+			"needTime" : 84923209,
+			"needYield" : 0,
+			"saveState" : 697645,
+			"restoreState" : 697645,
+			"isEOF" : 1,
+			"direction" : "forward",
+			"docsExamined" : 89280000
+		}
+	},
+	"serverInfo" : {
+		"host" : "5bc2db033040",
+		"port" : 27017,
+		"version" : "4.2.0",
+		"gitVersion" : "a4b751dcf51dd249c5865812b390cfd1c0129c30"
+	},
+	"ok" : 1
+}
